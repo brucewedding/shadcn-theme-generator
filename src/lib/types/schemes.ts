@@ -1,0 +1,17 @@
+export enum ColorScheme {
+  Monochromatic,
+  Analogous,
+  Complementary,
+  SplitComplementary,
+  Triadic,
+  Tetradic,
+  GoldenRatio,
+  Fibonacci,
+  PentagramStar,
+  VesicaPiscis,
+  FlowerOfLife,
+  PlatonicSolids,
+  SpiralOfTheodorus,
+  MetatronsCube,
+  SeedOfLife,
+}
