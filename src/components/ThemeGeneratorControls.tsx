@@ -18,8 +18,19 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import { Slider } from '@/components/ui/slider'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
 
 import { useTheme } from '@/contexts/ThemeContext'
+import { ColorScheme } from '@/lib/types/schemes'
+import { randomInteger } from '@/lib/utils/math'
 
 export function ThemeGeneratorControls() {
   const {
@@ -28,13 +39,34 @@ export function ThemeGeneratorControls() {
     lockedColors,
     setLockedColors,
     toggleColorLock,
-    regenerateTheme,
+
+    generateColors,
     handleColorChange,
     handleOtherChange,
+    baseHue,
+    setBaseHue,
+    setBaseHueState,
+    saturation,
+    setSaturation,
+    setSaturationState,
+    scheme,
+    setScheme,
+    setSchemeState,
+    isDark,
+    setIsDark,
   } = useTheme()
 
   const randomizeTheme = () => {
-    regenerateTheme()
+    const newBaseHue = randomInteger(0, 360)
+    const newSaturation = randomInteger(0, 100)
+    const schemeValues = Object.values(ColorScheme) as string[]
+    const newScheme = schemeValues[
+      Math.floor(Math.random() * schemeValues.length)
+    ] as ColorScheme
+    generateColors(isDark, newBaseHue, newSaturation, newScheme, lockedColors)
+    setBaseHueState(newBaseHue)
+    setSaturationState(newSaturation)
+    setSchemeState(newScheme)
   }
 
   const ExportTheme = () => {
@@ -60,6 +92,70 @@ export function ThemeGeneratorControls() {
         <TabsContent value="controls">
           <ScrollArea className="h-[600px] w-full rounded-md border p-4">
             <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="generation">
+                <AccordionTrigger>Generation Controls</AccordionTrigger>
+                <AccordionContent>
+                  <div className="mb-4 flex items-center gap-4">
+                    <Switch
+                      id="isDark"
+                      checked={isDark}
+                      onCheckedChange={(checked) => setIsDark(checked)}
+                    />
+                    <Label htmlFor="isDark">Dark Mode</Label>
+                  </div>
+                  <div className="mb-4">
+                    <Label htmlFor="hue">Hue</Label>
+                    <Slider
+                      id="hue"
+                      value={[baseHue]}
+                      onValueChange={(value) => setBaseHue(value[0])}
+                      max={360}
+                      step={1}
+                    />
+                    <div
+                      className="h-2 mt-2 rounded"
+                      style={{
+                        background: `linear-gradient(to right, 
+                          hsl(0, 100%, 50%), 
+                          hsl(60, 100%, 50%), 
+                          hsl(120, 100%, 50%), 
+                          hsl(180, 100%, 50%), 
+                          hsl(240, 100%, 50%), 
+                          hsl(300, 100%, 50%), 
+                          hsl(360, 100%, 50%))`,
+                      }}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <Label htmlFor="saturation">Saturation</Label>
+                    <Slider
+                      id="saturation"
+                      value={[saturation]}
+                      onValueChange={(value) => setSaturation(value[0])}
+                      max={100}
+                      step={1}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <Label htmlFor="scheme">Color Scheme</Label>
+                    <Select
+                      value={scheme}
+                      onValueChange={(value) => setScheme(value as ColorScheme)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a color scheme" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.values(ColorScheme).map((scheme) => (
+                          <SelectItem key={scheme} value={scheme}>
+                            {scheme}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
               <AccordionItem value="colors">
                 <AccordionTrigger>Color Variables</AccordionTrigger>
                 <AccordionContent>

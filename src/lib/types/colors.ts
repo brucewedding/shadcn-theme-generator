@@ -22,3 +22,28 @@ export type ColorVariables = {
   Input: string
   Ring: string
 }
+
+export const initialColors: ColorVariables = {
+  BG: '#ffffff',
+  FG: '#09090b',
+  Card: '#ffffff',
+  CardFG: '#09090b',
+  Popover: '#ffffff',
+  PopoverFG: '#09090b',
+  Primary: '#18181b',
+  PrimaryFG: '#fafafa',
+  Secondary: '#f4f4f5',
+  SecondaryFG: '#18181b',
+  Muted: '#f4f4f5',
+  MutedFG: '#71717a',
+  Accent: '#f4f4f5',
+  AccentFG: '#18181b',
+  InfoBG: '#0ea5e9',
+  ErrorBG: '#ef4444',
+  WarningBG: '#f59e0b',
+  SuccessBG: '#16a34a',
+  IEWSFG: '#fafafa',
+  Border: '#e4e4e7',
+  Input: '#e4e4e7',
+  Ring: '#18181b',
+}

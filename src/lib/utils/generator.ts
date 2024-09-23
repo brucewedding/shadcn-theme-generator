@@ -17,7 +17,13 @@ export function generateThemeColors(
 ): {
   colors: ColorVariables
 } {
+  console.log('Generating Theme Colors')
+  console.log('Base Hue:', baseHue)
+  console.log('UI Saturation:', uiSaturation)
+  console.log('Scheme:', scheme)
+  console.log('Locked Colors:', lockedColors)
   const schemeHues = generateSchemeColors(baseHue, scheme)
+  console.log('Scheme Hues:', schemeHues)
 
   const bgBase = isDark ? randomInteger(0, 7) : randomInteger(93, 100)
   const fgBaseDark = randomInteger(95, 100)
@@ -25,21 +31,21 @@ export function generateThemeColors(
 
   const baseValues = {
     BG: {
-      hue: randomInteger(0, schemeHues.length - 1),
+      hue: schemeHues[randomInteger(0, schemeHues.length - 1)],
       saturation: uiSaturation * 0.1,
       lightness: isDark
         ? bgBase + randomInteger(0, 9)
         : bgBase - randomInteger(0, 7),
     },
     Card: {
-      hue: randomInteger(0, schemeHues.length - 1),
+      hue: schemeHues[randomInteger(0, schemeHues.length - 1)],
       saturation: uiSaturation * 0.15,
       lightness: isDark
         ? bgBase + randomInteger(3, 9)
         : bgBase - randomInteger(5, 11),
     },
     Popover: {
-      hue: randomInteger(0, schemeHues.length - 1),
+      hue: schemeHues[randomInteger(0, schemeHues.length - 1)],
       saturation: uiSaturation * 0.2,
       lightness: isDark
         ? bgBase + randomInteger(6, 12)
@@ -51,17 +57,17 @@ export function generateThemeColors(
       lightness: isDark ? randomInteger(30, 60) : randomInteger(40, 70),
     },
     Secondary: {
-      hue: randomInteger(0, schemeHues.length - 1),
+      hue: schemeHues[randomInteger(0, schemeHues.length - 1)],
       saturation: uiSaturation * 1.1,
       lightness: isDark ? randomInteger(60, 70) : randomInteger(30, 40),
     },
     Muted: {
-      hue: randomInteger(0, schemeHues.length - 1),
+      hue: schemeHues[randomInteger(0, schemeHues.length - 1)],
       saturation: uiSaturation * 0.1,
       lightness: isDark ? randomInteger(40, 50) : randomInteger(50, 60),
     },
     Accent: {
-      hue: randomInteger(0, schemeHues.length - 1),
+      hue: schemeHues[randomInteger(0, schemeHues.length - 1)],
       saturation: uiSaturation * 1.2,
       lightness: randomInteger(15, 90),
     },
@@ -86,17 +92,17 @@ export function generateThemeColors(
       lightness: isDark ? randomInteger(50, 85) : randomInteger(40, 75),
     },
     Border: {
-      hue: randomInteger(0, schemeHues.length - 1),
+      hue: schemeHues[randomInteger(0, schemeHues.length - 1)],
       saturation: uiSaturation * 0.55,
       lightness: randomInteger(15, 90),
     },
     Input: {
-      hue: randomInteger(0, schemeHues.length - 1),
+      hue: schemeHues[randomInteger(0, schemeHues.length - 1)],
       saturation: uiSaturation * 0.45,
       lightness: randomInteger(15, 90),
     },
     Ring: {
-      hue: randomInteger(0, schemeHues.length - 1),
+      hue: schemeHues[randomInteger(0, schemeHues.length - 1)],
       saturation: uiSaturation * 0.6,
       lightness: randomInteger(15, 90),
     },

@@ -7,10 +7,9 @@ import {
   updateThemeColorsWithSaturation,
 } from '@/lib/utils/generator'
 
-import type { ColorVariables } from '@/lib/types/colors'
+import { initialColors, type ColorVariables } from '@/lib/types/colors'
 import type { ThemeVariables } from '@/lib/types/theme'
 import { initialThemeColors, initialThemeOther } from '@/lib/types/theme'
-import { themeColorVariables, themeOtherVariables } from '@/lib/types/theme'
 import { ColorScheme } from '@/lib/types/schemes'
 import { hexToHSL } from '@/lib/utils/color'
 import { randomInteger } from '@/lib/utils/math'
@@ -24,10 +23,13 @@ export type ThemeContextType = {
   setIsDark: (isDark: boolean) => void
   baseHue: number
   setBaseHue: (baseHue: number) => void
+  setBaseHueState: (baseHue: number) => void
   saturation: number
   setSaturation: (saturation: number) => void
+  setSaturationState: (saturation: number) => void
   scheme: ColorScheme
   setScheme: (scheme: ColorScheme) => void
+  setSchemeState: (scheme: ColorScheme) => void
   colors: ColorVariables
   setColors: (colors: ColorVariables) => void
   lockedColors: Set<string>
@@ -35,7 +37,13 @@ export type ThemeContextType = {
   toggleColorLock: (colorKey: string) => void
   handleColorChange: (colorKey: string, newColor: string) => void
   handleOtherChange: (variable: string, value: string) => void
-  regenerateTheme: () => void
+  generateColors: (
+    isDark: boolean,
+    newHue: number,
+    newSaturation: number,
+    newScheme: ColorScheme,
+    lockedColors: Set<string>
+  ) => void
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
@@ -56,40 +64,8 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     randomInteger(30, 90)
   )
   const [scheme, setSchemeState] = useState<ColorScheme>(ColorScheme.Triadic)
-  const [colors, setColors] = useState<ColorVariables>(
-    generateThemeColors(isDark, baseHue, saturation, scheme).colors
-  )
+  const [colors, setColors] = useState<ColorVariables>(initialColors)
   const [lockedColors, setLockedColors] = useState<Set<string>>(new Set())
-
-  const updateThemeColors = useCallback((newColors: ColorVariables) => {
-    const newThemeColors = {
-      '--background': newColors.BG,
-      '--foreground': newColors.FG,
-      '--card': newColors.Card,
-      '--card-foreground': newColors.CardFG,
-      '--popover': newColors.Popover,
-      '--popover-foreground': newColors.PopoverFG,
-      '--primary': newColors.Primary,
-      '--primary-foreground': newColors.PrimaryFG,
-      '--secondary': newColors.Secondary,
-      '--secondary-foreground': newColors.SecondaryFG,
-      '--muted': newColors.Muted,
-      '--muted-foreground': newColors.MutedFG,
-      '--accent': newColors.Accent,
-      '--accent-foreground': newColors.AccentFG,
-      '--destructive': newColors.ErrorBG,
-      '--destructive-foreground': newColors.IEWSFG,
-      '--border': newColors.Border,
-      '--input': newColors.Input,
-      '--ring': newColors.Ring,
-    }
-    setThemeColors(newThemeColors)
-    setTheme((prevTheme) => ({ ...prevTheme, ...newThemeColors }))
-    var r = document.querySelector(':root') as any
-    Object.entries(newThemeColors).forEach(([key, value]) => {
-      r.style.setProperty(key, hexToHSL(value, 'string'))
-    })
-  }, [])
 
   const updateThemeOthers = useCallback((newOtherVariables: ThemeVariables) => {
     setThemeOtherVariables((prevThemeOtherVariables: ThemeVariables) => ({
@@ -102,25 +78,54 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const generateColors = useCallback(
     (
       isDark: boolean,
-      baseHue: number,
-      uiSaturation: number,
-      scheme: ColorScheme,
+      newHue: number,
+      newSaturation: number,
+      newScheme: ColorScheme,
       lockedColors: Set<string>
     ) => {
+      console.log('Generating colors with baseHue:', newHue)
+      console.log('Generating colors with uiSaturation:', newSaturation)
+      console.log('Generating colors with scheme:', newScheme)
+      console.log('Generating colors with lockedColors:', lockedColors)
       const { colors: newColors } = generateThemeColors(
         isDark,
-        baseHue,
-        uiSaturation,
-        scheme,
+        newHue,
+        newSaturation,
+        newScheme,
         Object.fromEntries(
           Object.entries(colors).filter(([key]) => lockedColors.has(key))
         ) as Partial<ColorVariables>
       )
-
-      updateThemeColors(newColors)
+      const newThemeColors = {
+        '--background': newColors.BG,
+        '--foreground': newColors.FG,
+        '--card': newColors.Card,
+        '--card-foreground': newColors.CardFG,
+        '--popover': newColors.Popover,
+        '--popover-foreground': newColors.PopoverFG,
+        '--primary': newColors.Primary,
+        '--primary-foreground': newColors.PrimaryFG,
+        '--secondary': newColors.Secondary,
+        '--secondary-foreground': newColors.SecondaryFG,
+        '--muted': newColors.Muted,
+        '--muted-foreground': newColors.MutedFG,
+        '--accent': newColors.Accent,
+        '--accent-foreground': newColors.AccentFG,
+        '--destructive': newColors.ErrorBG,
+        '--destructive-foreground': newColors.IEWSFG,
+        '--border': newColors.Border,
+        '--input': newColors.Input,
+        '--ring': newColors.Ring,
+      }
       setColors(newColors)
+      setThemeColors(newThemeColors)
+      setTheme((prevTheme) => ({ ...prevTheme, ...newThemeColors }))
+      var r = document.querySelector(':root') as any
+      Object.entries(newThemeColors).forEach(([key, value]) => {
+        r.style.setProperty(key, hexToHSL(value, 'string'))
+      })
     },
-    [colors, updateThemeColors]
+    [colors]
   )
 
   const updateColorsWithSaturation = useCallback(
@@ -131,31 +136,39 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
           saturation,
           lockedColors
         )
-        updateThemeColors(newColors)
+        const newThemeColors = {
+          '--background': newColors.BG,
+          '--foreground': newColors.FG,
+          '--card': newColors.Card,
+          '--card-foreground': newColors.CardFG,
+          '--popover': newColors.Popover,
+          '--popover-foreground': newColors.PopoverFG,
+          '--primary': newColors.Primary,
+          '--primary-foreground': newColors.PrimaryFG,
+          '--secondary': newColors.Secondary,
+          '--secondary-foreground': newColors.SecondaryFG,
+          '--muted': newColors.Muted,
+          '--muted-foreground': newColors.MutedFG,
+          '--accent': newColors.Accent,
+          '--accent-foreground': newColors.AccentFG,
+          '--destructive': newColors.ErrorBG,
+          '--destructive-foreground': newColors.IEWSFG,
+          '--border': newColors.Border,
+          '--input': newColors.Input,
+          '--ring': newColors.Ring,
+        }
+        setColors(newColors)
+        setThemeColors(newThemeColors)
+        setTheme((prevTheme) => ({ ...prevTheme, ...newThemeColors }))
+        var r = document.querySelector(':root') as any
+        Object.entries(newThemeColors).forEach(([key, value]) => {
+          r.style.setProperty(key, hexToHSL(value, 'string'))
+        })
         return newColors
       })
     },
-    [lockedColors, updateThemeColors]
+    [lockedColors]
   )
-
-  const regenerateTheme = useCallback(() => {
-    const newBaseHue = randomInteger(0, 360)
-    const newSaturation = randomInteger(0, 100)
-    const schemeValues = Object.values(ColorScheme).filter(
-      (value) => typeof value === 'number'
-    ) as number[]
-    const newScheme = schemeValues[
-      Math.floor(Math.random() * schemeValues.length)
-    ] as ColorScheme
-    const newColors = generateColors(
-      isDark,
-      newBaseHue,
-      newSaturation,
-      newScheme,
-      lockedColors
-    )
-    return newColors
-  }, [generateColors, isDark, lockedColors])
 
   const toggleColorLock = useCallback((colorKey: string) => {
     setLockedColors((prevLockedColors) => {
@@ -170,14 +183,14 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleColorChange = useCallback(
     (colorKey: string, newColor: string) => {
-      setColors((prevColors) => {
-        const newColors: ColorVariables = { ...prevColors }
-        newColors[colorKey as keyof ColorVariables] = newColor
-        updateThemeColors(newColors)
-        return newColors
-      })
+      setThemeColors((prevColors: ThemeVariables) => ({
+        ...prevColors,
+        [colorKey]: newColor,
+      }))
+      var r = document.querySelector(':root') as any
+      r.style.setProperty(colorKey, newColor)
     },
-    [updateThemeColors]
+    []
   )
 
   const handleOtherChange = useCallback((variable: string, value: string) => {
@@ -230,19 +243,21 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     setIsDark,
     baseHue,
     setBaseHue,
+    setBaseHueState,
     saturation,
     setSaturation,
+    setSaturationState,
     scheme,
     setScheme,
+    setSchemeState,
     colors,
     setColors,
     lockedColors,
     setLockedColors,
     toggleColorLock,
     handleColorChange,
-    regenerateTheme,
+    generateColors,
     handleOtherChange,
-    updateThemeColors,
     updateThemeOthers,
   }
 
