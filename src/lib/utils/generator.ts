@@ -203,36 +203,36 @@ export function generateThemeColors(
       schemeHues[randomInteger(0, schemeHues.length - 1)],
       uiSaturation * 0.3,
       Color(bgColors.BG).isDark()
-        ? fgBaseDark - randomInteger(0, 12)
-        : fgBaseLight + randomInteger(0, 10)
+        ? fgBaseDark - randomInteger(0, 17)
+        : fgBaseLight + randomInteger(0, 17)
     ),
     CardFG: generateColor(
       schemeHues[randomInteger(0, schemeHues.length - 1)],
       uiSaturation * 0.15,
       Color(bgColors.Card).isDark()
-        ? fgBaseDark - randomInteger(0, 9)
-        : fgBaseLight + randomInteger(0, 7)
+        ? fgBaseDark - randomInteger(0, 19)
+        : fgBaseLight + randomInteger(0, 17)
     ),
     PopoverFG: generateColor(
       schemeHues[randomInteger(0, schemeHues.length - 1)],
       uiSaturation * 0.25,
       Color(bgColors.Popover).isDark()
-        ? fgBaseDark - randomInteger(0, 15)
-        : fgBaseLight + randomInteger(0, 15)
+        ? fgBaseDark - randomInteger(0, 20)
+        : fgBaseLight + randomInteger(0, 20)
     ),
     PrimaryFG: generateColor(
       schemeHues[randomInteger(0, schemeHues.length - 1)],
       uiSaturation * 0.1,
       Color(bgColors.Primary).isDark()
-        ? fgBaseDark - randomInteger(0, 5)
-        : fgBaseLight + randomInteger(0, 5)
+        ? fgBaseDark - randomInteger(0, 15)
+        : fgBaseLight + randomInteger(0, 15)
     ),
     SecondaryFG: generateColor(
       schemeHues[randomInteger(0, schemeHues.length - 1)],
       uiSaturation * 0.2,
       Color(bgColors.Secondary).isDark()
-        ? fgBaseDark - randomInteger(0, 5)
-        : fgBaseLight + randomInteger(0, 5)
+        ? fgBaseDark - randomInteger(0, 25)
+        : fgBaseLight + randomInteger(0, 25)
     ),
     MutedFG: generateColor(
       schemeHues[randomInteger(0, schemeHues.length - 1)],

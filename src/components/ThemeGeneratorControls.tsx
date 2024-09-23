@@ -39,7 +39,6 @@ export function ThemeGeneratorControls() {
     lockedColors,
     setLockedColors,
     toggleColorLock,
-
     generateColors,
     handleColorChange,
     handleOtherChange,

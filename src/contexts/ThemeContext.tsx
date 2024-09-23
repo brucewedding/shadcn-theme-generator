@@ -7,7 +7,11 @@ import {
   updateThemeColorsWithSaturation,
 } from '@/lib/utils/generator'
 
-import { initialColors, type ColorVariables } from '@/lib/types/colors'
+import {
+  initialColors,
+  type ColorVariables,
+  colorVariableMapping,
+} from '@/lib/types/colors'
 import type { ThemeVariables } from '@/lib/types/theme'
 import { initialThemeColors, initialThemeOther } from '@/lib/types/theme'
 import { ColorScheme } from '@/lib/types/schemes'
@@ -83,10 +87,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       newScheme: ColorScheme,
       lockedColors: Set<string>
     ) => {
-      console.log('Generating colors with baseHue:', newHue)
-      console.log('Generating colors with uiSaturation:', newSaturation)
-      console.log('Generating colors with scheme:', newScheme)
-      console.log('Generating colors with lockedColors:', lockedColors)
       const { colors: newColors } = generateThemeColors(
         isDark,
         newHue,
@@ -96,28 +96,19 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
           Object.entries(colors).filter(([key]) => lockedColors.has(key))
         ) as Partial<ColorVariables>
       )
-      const newThemeColors = {
-        '--background': newColors.BG,
-        '--foreground': newColors.FG,
-        '--card': newColors.Card,
-        '--card-foreground': newColors.CardFG,
-        '--popover': newColors.Popover,
-        '--popover-foreground': newColors.PopoverFG,
-        '--primary': newColors.Primary,
-        '--primary-foreground': newColors.PrimaryFG,
-        '--secondary': newColors.Secondary,
-        '--secondary-foreground': newColors.SecondaryFG,
-        '--muted': newColors.Muted,
-        '--muted-foreground': newColors.MutedFG,
-        '--accent': newColors.Accent,
-        '--accent-foreground': newColors.AccentFG,
-        '--destructive': newColors.ErrorBG,
-        '--destructive-foreground': newColors.IEWSFG,
-        '--border': newColors.Border,
-        '--input': newColors.Input,
-        '--ring': newColors.Ring,
-      }
-      setColors(newColors)
+
+      const newThemeColors: ThemeVariables = {}
+      const newColorState: ColorVariables = { ...newColors }
+      Object.entries(newColors).forEach(([key, value]) => {
+        const cssVar = Object.keys(colorVariableMapping).find(
+          (k) => colorVariableMapping[k] === key
+        )
+        if (cssVar) {
+          newThemeColors[cssVar] = value
+        }
+      })
+
+      setColors(newColorState)
       setThemeColors(newThemeColors)
       setTheme((prevTheme) => ({ ...prevTheme, ...newThemeColors }))
       var r = document.querySelector(':root') as any
@@ -136,28 +127,17 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
           saturation,
           lockedColors
         )
-        const newThemeColors = {
-          '--background': newColors.BG,
-          '--foreground': newColors.FG,
-          '--card': newColors.Card,
-          '--card-foreground': newColors.CardFG,
-          '--popover': newColors.Popover,
-          '--popover-foreground': newColors.PopoverFG,
-          '--primary': newColors.Primary,
-          '--primary-foreground': newColors.PrimaryFG,
-          '--secondary': newColors.Secondary,
-          '--secondary-foreground': newColors.SecondaryFG,
-          '--muted': newColors.Muted,
-          '--muted-foreground': newColors.MutedFG,
-          '--accent': newColors.Accent,
-          '--accent-foreground': newColors.AccentFG,
-          '--destructive': newColors.ErrorBG,
-          '--destructive-foreground': newColors.IEWSFG,
-          '--border': newColors.Border,
-          '--input': newColors.Input,
-          '--ring': newColors.Ring,
-        }
-        setColors(newColors)
+        const newThemeColors: ThemeVariables = {}
+        const newColorState: ColorVariables = { ...newColors }
+        Object.entries(newColors).forEach(([key, value]) => {
+          const cssVar = Object.keys(colorVariableMapping).find(
+            (k) => colorVariableMapping[k] === key
+          )
+          if (cssVar) {
+            newThemeColors[cssVar] = value
+          }
+        })
+        setColors(newColorState)
         setThemeColors(newThemeColors)
         setTheme((prevTheme) => ({ ...prevTheme, ...newThemeColors }))
         var r = document.querySelector(':root') as any
@@ -183,12 +163,35 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleColorChange = useCallback(
     (colorKey: string, newColor: string) => {
+      // Update themeColors state
+      console.log('colorKey', colorKey)
+      console.log('newColor', newColor)
       setThemeColors((prevColors: ThemeVariables) => ({
         ...prevColors,
         [colorKey]: newColor,
       }))
+
+      // Update colors state using the mapping object
+      const colorVariableKey = colorVariableMapping[colorKey]
+      console.log('colorVariableKey', colorVariableKey)
+      if (colorVariableKey) {
+        setColors((prevColors) => ({
+          ...prevColors,
+          [colorVariableKey]: newColor,
+        }))
+      }
+
+      // Update theme state
+      setTheme((prevTheme) => ({
+        ...prevTheme,
+        [colorKey]: newColor,
+      }))
+
+      // Update CSS variable
       var r = document.querySelector(':root') as any
-      r.style.setProperty(colorKey, newColor)
+      console.log('colorKey', colorKey)
+      console.log('newColor', newColor)
+      r.style.setProperty(colorKey, hexToHSL(newColor, 'string'))
     },
     []
   )
