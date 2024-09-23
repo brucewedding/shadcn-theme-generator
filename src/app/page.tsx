@@ -2,7 +2,7 @@ import { PreviewComponent } from '@/components/Preview'
 import { ThemeGeneratorControls } from '@/components/ThemeGeneratorControls'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 
-export function ThemeGenerator() {
+function ThemeGenerator() {
   return (
     <section className="p-4">
       <main className="container mx-auto p-4">
