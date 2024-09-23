@@ -61,23 +61,6 @@ This project is a powerful and intuitive theme generator and editor for Shadcn-U
 4. Click the "Randomize Colors" button to generate a new random theme.
 5. Export your theme as CSS and Tailwind config using the "Export" tab.
 
-## Project Structure
-
-src/
-├── app/
-│ ├── globals.css
-│ ├── layout.tsx
-│ └── page.tsx
-├── components/
-│ ├── Preview.tsx
-│ ├── ThemeGeneratorControls.tsx
-│ └── ui/
-├── contexts/
-│ └── ThemeContext.tsx
-├── lib/
-│ ├── types/
-│ └── utils/
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
