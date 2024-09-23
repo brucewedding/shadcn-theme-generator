@@ -1,12 +1,13 @@
-export type ThemeColorsVariables = {
+export type ThemeVariables = {
   [key: string]: string
 }
 
-export type ThemeOtherVariables = {
-  [key: string]: string
+export type Theme = {
+  css: ThemeVariables
+  tailwind: ThemeVariables
 }
 
-export const initialThemeColors: ThemeColorsVariables = {
+export const initialThemeColors: ThemeVariables = {
   '--background': '#ffffff',
   '--foreground': '#09090b',
   '--card': '#ffffff',
@@ -28,7 +29,7 @@ export const initialThemeColors: ThemeColorsVariables = {
   '--ring': '#18181b',
 }
 
-export const initialThemeOther: ThemeOtherVariables = {
+export const initialThemeOther: ThemeVariables = {
   '--radius': '0.5rem',
   '--font-sans': 'Inter, sans-serif',
   '--font-mono': 'Mononoki Nerd Font Mono, monospace',

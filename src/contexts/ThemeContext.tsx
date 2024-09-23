@@ -8,10 +8,7 @@ import {
 } from '@/lib/utils/generator'
 
 import type { ColorVariables } from '@/lib/types/colors'
-import type {
-  ThemeColorsVariables,
-  ThemeOtherVariables,
-} from '@/lib/types/theme'
+import type { ThemeVariables } from '@/lib/types/theme'
 import { initialThemeColors, initialThemeOther } from '@/lib/types/theme'
 import { themeColorVariables, themeOtherVariables } from '@/lib/types/theme'
 import { ColorScheme } from '@/lib/types/schemes'
@@ -19,10 +16,10 @@ import { hexToHSL } from '@/lib/utils/color'
 import { randomInteger } from '@/lib/utils/math'
 
 export type ThemeContextType = {
-  theme: ThemeColorsVariables
-  setTheme: (theme: ThemeColorsVariables) => void
-  other: ThemeOtherVariables
-  setOther: (other: ThemeOtherVariables) => void
+  themeColors: ThemeVariables
+  setThemeColors: (themeColors: ThemeVariables) => void
+  themeOtherVariables: ThemeVariables
+  setThemeOtherVariables: (themeOtherVariables: ThemeVariables) => void
   isDark: boolean
   setIsDark: (isDark: boolean) => void
   baseHue: number
@@ -44,10 +41,15 @@ export type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  const [theme, setTheme] = useState<ThemeVariables>({
+    ...initialThemeColors,
+    ...initialThemeOther,
+  })
+  console.log(theme)
   const [themeColors, setThemeColors] =
-    useState<ThemeColorsVariables>(initialThemeColors)
+    useState<ThemeVariables>(initialThemeColors)
   const [themeOtherVariables, setThemeOtherVariables] =
-    useState<ThemeOtherVariables>(initialThemeOther)
+    useState<ThemeVariables>(initialThemeOther)
   const [isDark, setIsDarkState] = useState<boolean>(false)
   const [baseHue, setBaseHueState] = useState<number>(0)
   const [saturation, setSaturationState] = useState<number>(
@@ -82,24 +84,20 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       '--ring': newColors.Ring,
     }
     setThemeColors(newThemeColors)
-
+    setTheme((prevTheme) => ({ ...prevTheme, ...newThemeColors }))
     var r = document.querySelector(':root') as any
     Object.entries(newThemeColors).forEach(([key, value]) => {
       r.style.setProperty(key, hexToHSL(value, 'string'))
     })
   }, [])
 
-  const updateThemeOthers = useCallback(
-    (newOtherVariables: ThemeOtherVariables) => {
-      setThemeOtherVariables(
-        (prevThemeOtherVariables: ThemeOtherVariables) => ({
-          ...prevThemeOtherVariables,
-          ...newOtherVariables,
-        })
-      )
-    },
-    []
-  )
+  const updateThemeOthers = useCallback((newOtherVariables: ThemeVariables) => {
+    setThemeOtherVariables((prevThemeOtherVariables: ThemeVariables) => ({
+      ...prevThemeOtherVariables,
+      ...newOtherVariables,
+    }))
+    setTheme((prevTheme) => ({ ...prevTheme, ...newOtherVariables }))
+  }, [])
 
   const generateColors = useCallback(
     (
@@ -110,7 +108,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       lockedColors: Set<string>
     ) => {
       const { colors: newColors } = generateThemeColors(
-        true,
+        isDark,
         baseHue,
         uiSaturation,
         scheme,
@@ -183,7 +181,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   )
 
   const handleOtherChange = useCallback((variable: string, value: string) => {
-    setThemeOtherVariables((prev: ThemeOtherVariables) => ({
+    setThemeOtherVariables((prev: ThemeVariables) => ({
       ...prev,
       [variable]: value,
     }))
@@ -224,10 +222,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   )
 
   const value = {
-    theme: themeColors,
-    setTheme: setThemeColors,
-    other: themeOtherVariables,
-    setOther: setThemeOtherVariables,
+    themeColors,
+    setThemeColors,
+    themeOtherVariables,
+    setThemeOtherVariables,
     isDark,
     setIsDark,
     baseHue,

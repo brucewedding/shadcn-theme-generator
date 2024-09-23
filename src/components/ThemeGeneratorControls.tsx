@@ -18,13 +18,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { themeColorVariables, themeOtherVariables } from '@/lib/types/theme'
 
 import { useTheme } from '@/contexts/ThemeContext'
 
 export function ThemeGeneratorControls() {
   const {
-    theme,
+    themeColors,
+    themeOtherVariables,
     lockedColors,
     setLockedColors,
     toggleColorLock,
@@ -35,6 +35,19 @@ export function ThemeGeneratorControls() {
 
   const randomizeTheme = () => {
     regenerateTheme()
+  }
+
+  const ExportTheme = () => {
+    const radius = '--radius'
+    const { [radius]: radiusValue, ...tailwind } = themeOtherVariables
+    const themeCode = {
+      css: {
+        ...themeColors,
+        [radius]: radiusValue,
+      },
+      tailwind: tailwind,
+    }
+    return JSON.stringify(themeCode, null, 2)
   }
 
   return (
@@ -50,7 +63,7 @@ export function ThemeGeneratorControls() {
               <AccordionItem value="colors">
                 <AccordionTrigger>Color Variables</AccordionTrigger>
                 <AccordionContent>
-                  {themeColorVariables.map((variable) => (
+                  {Object.keys(themeColors).map((variable) => (
                     <div key={variable} className="mb-4">
                       <Label htmlFor={variable}>{variable}</Label>
                       <div className="flex items-center space-x-2">
@@ -59,12 +72,12 @@ export function ThemeGeneratorControls() {
                             <Button
                               variant="outline"
                               className="w-[80px] h-[40px] p-0"
-                              style={{ backgroundColor: theme[variable] }}
+                              style={{ backgroundColor: themeColors[variable] }}
                             />
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0">
                             <HexColorPicker
-                              color={theme[variable]}
+                              color={themeColors[variable]}
                               onChange={(color) =>
                                 handleColorChange(variable, color)
                               }
@@ -73,7 +86,7 @@ export function ThemeGeneratorControls() {
                         </Popover>
                         <Input
                           id={variable}
-                          value={theme[variable]}
+                          value={themeColors[variable]}
                           onChange={(e) =>
                             handleColorChange(variable, e.target.value)
                           }
@@ -87,12 +100,12 @@ export function ThemeGeneratorControls() {
               <AccordionItem value="other">
                 <AccordionTrigger>Other Variables</AccordionTrigger>
                 <AccordionContent>
-                  {themeOtherVariables.map((variable) => (
+                  {Object.keys(themeOtherVariables).map((variable) => (
                     <div key={variable} className="mb-4">
                       <Label htmlFor={variable}>{variable}</Label>
                       <Input
                         id={variable}
-                        value={theme[variable]}
+                        value={themeOtherVariables[variable]}
                         onChange={(e) =>
                           handleOtherChange(variable, e.target.value)
                         }
@@ -106,7 +119,9 @@ export function ThemeGeneratorControls() {
         </TabsContent>
         <TabsContent value="code">
           <ScrollArea className="h-[600px] w-full rounded-md border p-4">
-            <pre className="text-sm">{JSON.stringify(theme, null, 2)}</pre>
+            <pre className="text-sm">
+              <ExportTheme />
+            </pre>
           </ScrollArea>
         </TabsContent>
       </Tabs>
