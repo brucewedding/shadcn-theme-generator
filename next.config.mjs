@@ -2,7 +2,7 @@
 const nextConfig = {
   output: 'export',
   basePath:
-    process.env.NODE_ENV === 'production' ? '/shadcn-theme-generator/' : '',
+    process.env.NODE_ENV === 'production' ? '/shadcn-theme-generator' : '',
   images: {
     unoptimized: true,
   },
