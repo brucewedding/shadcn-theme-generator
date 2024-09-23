@@ -1,34 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+# Shadcn-UI Theme Generator and Editor
+
+## Overview
+
+This project is a powerful and intuitive theme generator and editor for Shadcn-UI components. It allows users to create, customize, and preview themes for their Shadcn-UI based projects in real-time. With a user-friendly interface and a wide range of customization options, this tool streamlines the process of creating unique and visually appealing themes for your Next.js applications.
+
+## Features
+
+- Real-time theme preview
+- Customizable color schemes
+- Dark and light mode support
+- Export themes as CSS and Tailwind config
+- Randomize theme colors
+- Lock specific colors while generating new themes
+- Responsive design for various screen sizes
+
+## Tech Stack
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- Shadcn-UI components
+- Bun (for package management and running scripts)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js (v14 or later)
+- Bun (latest version)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository:
 
-## Learn More
+   ```bash
+   git clone https://github.com/yourusername/shadcn-ui-theme-generator.git
+   cd shadcn-ui-theme-generator
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. Install dependencies:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   bun install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Start the development server:
 
-## Deploy on Vercel
+   ```bash
+   bun run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Open your browser and navigate to `http://localhost:3000` to access the theme generator.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Usage
+
+1. Use the controls in the sidebar to adjust theme colors and properties.
+2. Preview the changes in real-time on the main content area.
+3. Lock specific colors to keep them constant while generating new themes.
+4. Click the "Randomize Colors" button to generate a new random theme.
+5. Export your theme as CSS and Tailwind config using the "Export" tab.
+
+## Project Structure
+
+src/
+├── app/
+│ ├── globals.css
+│ ├── layout.tsx
+│ └── page.tsx
+├── components/
+│ ├── Preview.tsx
+│ ├── ThemeGeneratorControls.tsx
+│ └── ui/
+├── contexts/
+│ └── ThemeContext.tsx
+├── lib/
+│ ├── types/
+│ └── utils/
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
+## Acknowledgments
+
+- [Shadcn-UI](https://ui.shadcn.com/) for the excellent component library
+- [Next.js](https://nextjs.org/) for the React framework
+- [Tailwind CSS](https://tailwindcss.com/) for the utility-first CSS framework
