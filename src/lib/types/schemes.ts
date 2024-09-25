@@ -14,4 +14,12 @@ export enum ColorScheme {
   SpiralOfTheodorus = 'SpiralOfTheodorus',
   MetatronsCube = 'MetatronsCube',
   SeedOfLife = 'SeedOfLife',
+  FibonacciSequence = 'FibonacciSequence',
+  GoldenSpiral = 'GoldenSpiral',
+  MetallicMeans = 'MetallicMeans',
+  ContinuedFraction = 'ContinuedFraction',
+  GoldenTrisection = 'GoldenTrisection',
+  FareySequence = 'FareySequence',
+  NobleNumbers = 'NobleNumbers',
+  GoldenTriangle = 'GoldenTriangle',
 }
